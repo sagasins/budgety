@@ -2,7 +2,7 @@
 //budget cotroller
 var budgetController = (function(){
 
-	var Expense = function (id, description, value){
+	var Expense = function(id, description, value){
 		this.id = id;
 		this.description = description; 
 		this.value = value;
@@ -203,6 +203,12 @@ UIController = (function () {
 		return (type === 'exp' ? '-' : '+') + '' + int + '.' + dec;
 	};
 
+	var nodeListForEach = function(list, callback) {
+		for (var i = 0; i < list.length; i++) {
+			callback(list[i], i);
+		}
+	};
+
 	return {
 		getInput: function () {
 			return {
@@ -276,39 +282,50 @@ UIController = (function () {
 		},
 
 
-		displayPercentages: function (percentages) {
+		displayPercentages: function(percentages) {
 			var fields;
 			fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
-			var nodeListForEach = function (list, callback) {
-				for (var i = 0; i < list.length; i++) {
-					callback(list[i], i);
-				}
-			};
 
-			nodeListForEach(fields, function (current, index) {
-				if (percentages[index] > 0) {
-					current.textContent = percentages[index] + '%';
-				} else {
-					current.textContent = '---';
-				}
+		nodeListForEach(fields, function(current, index) {
+			if (percentages[index] > 0) {
+				current.textContent = percentages[index] + '%';
+			} else {
+				current.textContent = '---';
+			}
 
-			});
+		}
+);
+
+},
+
+	DisplayMonth: function () {
+		var now, year, month;
+		now = new Date();
+		months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		month = now.getMonth();
+		year = now.getFullYear();
+		document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
+	},
+
+
+	changedType: function () {
+		var fields = document.querySelectorAll(
+			DOMstrings.inputType + ',' +
+			DOMstrings.inputDescription + ',' + DOMstrings.inputValue);
+
+	nodeListForEach(fields,function(cur) {
+		cur.classList.toggle('red-focus');
+		});
+
+		document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
 		},
 
-		DisplayMonth: function () {
-			var now, year, month;
-			now = new Date();
-			months = ['January', 'February', 'March', 'April' , 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-			month = now.getMonth();
-			year = now.getFullYear();
-			document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
-		},
 
 		GetDOMstrings: function () {
 			return DOMstrings;
 
 		}
-	};
+		};
 
 })();
 
@@ -333,8 +350,9 @@ var controller = (function (budgetCtrl, UICtrl) {
  
             }
             document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+            document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
         });
-    }
+    };
  
     var ctrlDeleteItem = function (event) {
  
@@ -376,7 +394,7 @@ var controller = (function (budgetCtrl, UICtrl) {
  
         // 3. Display the budget od the UI
         UICtrl.displayBudget(budget);
-    }
+    };
  
     var ctrlAddItem = function () {
         var input;
