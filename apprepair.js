@@ -294,7 +294,7 @@ var UIController = (function() {
 		DisplayMonth: function(){
 			var now, year;
 			var now = new Date();
-			year.now.getFullYear();
+			year = now.getFullYear();
 			document.querySelector(DOMstrings.dateLabel).textContent = year;
 		},
 
